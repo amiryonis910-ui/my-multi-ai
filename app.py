@@ -3,10 +3,10 @@ from huggingface_hub import InferenceClient
 
 # قائمة النماذج المتاحة
 AVAILABLE_MODELS = [
-    {"name": "Qwen 2.5 7B (متوازن)", "id": "Qwen/Qwen2.5-7B-Instruct"},
-    {"name": "Gemma 2 9B (جودة عالية)", "id": "google/gemma-2-9b-it"},
-    {"name": "Mistral 7B (سريع)", "id": "mistralai/Mistral-7B-Instruct-v0.3"},
-    {"name": "Llama 3.2 3B (خفيف)", "id": "meta-llama/Llama-3.2-3B-Instruct"},
+    {"name": "Qwen 2.5 7B (متوازن وممتاز)", "id": "Qwen/Qwen2.5-7B-Instruct"},
+    {"name": "Mistral 7B (سريع جداً)", "id": "mistralai/Mistral-7B-Instruct-v0.3"},
+    {"name": "Phi-3 Mini (خفيف وسريع)", "id": "microsoft/Phi-3-mini-4k-instruct"},
+    {"name": "Zephyr 7B (جيد للمحادثة)", "id": "HuggingFaceH4/zephyr-7b-beta"},
 ]
 
 client = InferenceClient(token=st.secrets["HF_TOKEN"])
