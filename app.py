@@ -1,0 +1,49 @@
+import streamlit as st
+from huggingface_hub import InferenceClient
+
+# قائمة النماذج المتاحة
+AVAILABLE_MODELS = [
+    {"name": "Qwen 2.5 7B (متوازن)", "id": "Qwen/Qwen2.5-7B-Instruct"},
+    {"name": "Gemma 2 9B (جودة عالية)", "id": "google/gemma-2-9b-it"},
+    {"name": "Mistral 7B (سريع)", "id": "mistralai/Mistral-7B-Instruct-v0.3"},
+    {"name": "Llama 3.2 3B (خفيف)", "id": "meta-llama/Llama-3.2-3B-Instruct"},
+]
+
+client = InferenceClient(token=st.secrets["HF_TOKEN"])
+
+st.set_page_config(page_title="تطبيقي متعدد النماذج", page_icon="🤖")
+st.title("🤖 مساعدي الذكي - نسخة متعددة النماذج")
+
+# القائمة المنسدلة لاختيار النموذج
+model_choice = st.selectbox(
+    "اختر نموذج الذكاء الاصطناعي:",
+    options=[m["name"] for m in AVAILABLE_MODELS]
+)
+
+selected_model_id = next(m["id"] for m in AVAILABLE_MODELS if m["name"] == model_choice)
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if prompt := st.chat_input("اكتب رسالتك هنا..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner(f"جاري التفكير باستخدام {model_choice}..."):
+            try:
+                response = client.chat_completion(
+                    messages=st.session_state.messages,
+                    model=selected_model_id,
+                    max_tokens=800
+                )
+                reply = response.choices[0].message.content
+                st.markdown(reply)
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+            except Exception as e:
+                st.error(f"صار خطأ: {e}")
